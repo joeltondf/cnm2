@@ -1,0 +1,36 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.hero-card {
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.9), rgba(32, 201, 151, 0.9));
+    color: #fff;
+    border-radius: 1rem;
+}
+
+.hero-card .card-body {
+    padding: 2.5rem;
+}
+
+.data-tabs .nav-link {
+    font-weight: 500;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.chart-container {
+    min-height: 340px;
+}
+
+.breadcrumb-area {
+    background-color: #fff;
+    border-radius: 0.75rem;
+}
+
+@media (max-width: 767.98px) {
+    .hero-card .card-body {
+        padding: 1.5rem;
+    }
+}

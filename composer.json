@@ -1,0 +1,16 @@
+{
+    "name": "cnm/explorador-rreo",
+    "description": "Aplicação PHP para explorar o RREO FINBRA",
+    "type": "project",
+    "require": {
+        "php": ">=8.1",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}

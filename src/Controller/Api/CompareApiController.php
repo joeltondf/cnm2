@@ -28,11 +28,12 @@ class CompareApiController
 
         $municipios = filter_input(INPUT_POST, 'municipios', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
         $year = (int) filter_input(INPUT_POST, 'year', FILTER_SANITIZE_NUMBER_INT);
-        $periodicity = filter_input(INPUT_POST, 'periodicity', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
-        $period = filter_input(INPUT_POST, 'period', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
-        $scope = filter_input(INPUT_POST, 'scope', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+        $demonstrativo = filter_input(INPUT_POST, 'demonstrativo', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+        $period = (int) filter_input(INPUT_POST, 'period', FILTER_SANITIZE_NUMBER_INT);
+        $sphere = filter_input(INPUT_POST, 'sphere', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+        $annex = filter_input(INPUT_POST, 'annex', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
 
-        if (empty($municipios) || $year === 0 || $periodicity === '' || $period === '' || $scope === '') {
+        if (empty($municipios) || $year === 0 || $demonstrativo === '' || $period === 0 || $sphere === '' || $annex === '') {
             http_response_code(422);
             echo json_encode(['error' => 'Parâmetros obrigatórios ausentes.'], JSON_THROW_ON_ERROR);
             return;
@@ -41,7 +42,7 @@ class CompareApiController
         try {
             $payload = [];
             foreach ($municipios as $ibge) {
-                $payload[$ibge] = $this->finbraService->fetchRreo($ibge, $year, $periodicity, $period, $scope);
+                $payload[$ibge] = $this->finbraService->fetchRreo($ibge, $year, $demonstrativo, $period, $sphere, $annex);
             }
 
             $_SESSION['rreo_last_comparison'] = $payload;

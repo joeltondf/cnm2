@@ -61,31 +61,43 @@
                                 <input type="number" class="form-control" id="year" name="year" min="2010" max="<?= date('Y'); ?>" value="<?= date('Y'); ?>" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="periodicity" class="form-label">Periodicidade</label>
-                                <select class="form-select" id="periodicity" name="periodicity" required>
-                                    <option value="bimestral">Bimestral</option>
-                                    <option value="quadrimestral">Quadrimestral</option>
-                                    <option value="semestral">Semestral</option>
+                                <label for="demonstrativo" class="form-label">Demonstrativo</label>
+                                <select class="form-select" id="demonstrativo" name="demonstrativo" required>
+                                    <option value="RREO">RREO</option>
+                                    <option value="RREO Simplificado">RREO Simplificado</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="period" class="form-label">Período</label>
+                                <label for="period" class="form-label">Bimestre</label>
                                 <select class="form-select" id="period" name="period" required>
-                                    <option value="1">1º Período</option>
-                                    <option value="2">2º Período</option>
-                                    <option value="3">3º Período</option>
-                                    <option value="4">4º Período</option>
-                                    <option value="5">5º Período</option>
-                                    <option value="6">6º Período</option>
+                                    <option value="1">1º Bimestre</option>
+                                    <option value="2">2º Bimestre</option>
+                                    <option value="3">3º Bimestre</option>
+                                    <option value="4">4º Bimestre</option>
+                                    <option value="5">5º Bimestre</option>
+                                    <option value="6">6º Bimestre</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="scope" class="form-label">Abrangência</label>
-                                <select class="form-select" id="scope" name="scope" required>
-                                    <option value="consolidado">Consolidado</option>
-                                    <option value="poder-executivo">Poder Executivo</option>
-                                    <option value="poder-legislativo">Poder Legislativo</option>
+                                <label for="sphere" class="form-label">Esfera</label>
+                                <select class="form-select" id="sphere" name="sphere" required>
+                                    <option value="M">Municípios</option>
+                                    <option value="E">Estados e DF</option>
+                                    <option value="C">Consórcios Públicos</option>
                                 </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="annex" class="form-label">Anexo</label>
+                                <select class="form-select" id="annex" name="annex" required>
+                                    <option value="RREO-Anexo 01">RREO - Anexo 01</option>
+                                    <option value="RREO-Anexo 02">RREO - Anexo 02</option>
+                                    <option value="RREO-Anexo 03">RREO - Anexo 03</option>
+                                    <option value="RREO-Anexo 04">RREO - Anexo 04</option>
+                                    <option value="RREO-Anexo 05">RREO - Anexo 05</option>
+                                    <option value="RREO-Anexo 06">RREO - Anexo 06</option>
+                                    <option value="RREO-Anexo 07">RREO - Anexo 07</option>
+                                </select>
+                                <div class="form-text">Selecione conforme o demonstrativo desejado.</div>
                             </div>
                         </div>
                         <div class="d-flex gap-2 mt-4">

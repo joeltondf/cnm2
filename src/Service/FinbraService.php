@@ -23,14 +23,23 @@ class FinbraService
     /**
      * @return array<string, mixed>
      */
-    public function fetchRreo(string $ibgeCode, int $year, string $periodicity, string $period, string $scope): array
+    public function fetchRreo(
+        string $ibgeCode,
+        int $year,
+        string $demonstrativo,
+        int $period,
+        string $sphere,
+        string $annex
+    ): array
     {
         $query = http_build_query([
-            'municipio' => $ibgeCode,
-            'ano' => $year,
-            'periodicidade' => $periodicity,
-            'periodo' => $period,
-            'abrangencia' => $scope,
+            'an_exercicio' => $year,
+            'nr_periodo' => $period,
+            'co_tipo_demonstrativo' => $demonstrativo,
+            'co_esfera' => $sphere,
+            'no_anexo' => $annex,
+            'id_ente' => $ibgeCode,
+            'limit' => 5000,
         ]);
 
         $url = sprintf('%s?%s', $this->baseUrl, $query);
@@ -71,6 +80,120 @@ class FinbraService
             throw new Exception('A resposta da API FINBRA está em um formato inesperado.');
         }
 
-        return $decoded;
+        return $this->normalizeResponse($decoded, $ibgeCode, $year, $demonstrativo, $period, $sphere, $annex);
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>
+     */
+    private function normalizeResponse(
+        array $payload,
+        string $ibgeCode,
+        int $year,
+        string $demonstrativo,
+        int $period,
+        string $sphere,
+        string $annex
+    ): array {
+        $items = $payload['items'] ?? $payload['data'] ?? [];
+
+        if (!is_array($items)) {
+            $items = [];
+        }
+
+        $annexes = [];
+        $annexMap = [];
+
+        foreach ($items as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+
+            $annexName = $item['no_anexo'] ?? $item['anexo'] ?? $annex;
+            $tableLabel = $item['rotulo'] ?? 'Tabela Principal';
+            $columnLabel = $item['coluna'] ?? 'Valor';
+            $accountLabel = $item['conta'] ?? $item['cod_conta'] ?? 'Conta';
+            $value = $item['valor'] ?? null;
+            $unit = $item['unidade'] ?? null;
+
+            if (!isset($annexMap[$annexName])) {
+                $annexMap[$annexName] = [];
+            }
+
+            if (!isset($annexMap[$annexName][$tableLabel])) {
+                $annexMap[$annexName][$tableLabel] = [
+                    'columns' => [],
+                    'rows' => [],
+                    'unit' => $unit,
+                ];
+            }
+
+            if (!in_array($columnLabel, $annexMap[$annexName][$tableLabel]['columns'], true)) {
+                $annexMap[$annexName][$tableLabel]['columns'][] = $columnLabel;
+            }
+
+            if (!isset($annexMap[$annexName][$tableLabel]['rows'][$accountLabel])) {
+                $annexMap[$annexName][$tableLabel]['rows'][$accountLabel] = [];
+            }
+
+            if ($value !== null && is_numeric($value)) {
+                $value = (float) $value;
+            }
+
+            $annexMap[$annexName][$tableLabel]['rows'][$accountLabel][$columnLabel] = $value;
+        }
+
+        foreach ($annexMap as $annexName => $tables) {
+            $tableList = [];
+
+            foreach ($tables as $tableLabel => $tableData) {
+                $headers = array_merge(['Conta'], $tableData['columns']);
+                $rows = [];
+
+                foreach ($tableData['rows'] as $account => $columnValues) {
+                    $row = [$account];
+                    foreach ($tableData['columns'] as $columnLabel) {
+                        $row[] = $columnValues[$columnLabel] ?? null;
+                    }
+                    $rows[] = $row;
+                }
+
+                $tableList[] = [
+                    'title' => $tableLabel,
+                    'headers' => $headers,
+                    'rows' => $rows,
+                    'unit' => $tableData['unit'],
+                ];
+            }
+
+            $annexes[] = [
+                'title' => $annexName,
+                'tables' => $tableList,
+            ];
+        }
+
+        $firstItem = $items[0] ?? [];
+
+        $metadata = [
+            'municipio' => [
+                'codigo_ibge' => $firstItem['cod_ibge'] ?? $ibgeCode,
+                'nome' => $firstItem['instituicao'] ?? null,
+                'uf' => $firstItem['uf'] ?? null,
+                'populacao' => $firstItem['populacao'] ?? null,
+            ],
+            'ano' => $year,
+            'periodo' => $period,
+            'demonstrativo' => $demonstrativo,
+            'esfera' => $sphere,
+            'anexo' => $annex,
+        ];
+
+        return [
+            'municipio' => $metadata['municipio'],
+            'metadata' => $metadata,
+            'annexes' => $annexes,
+            'raw' => $items,
+        ];
     }
 }

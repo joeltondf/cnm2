@@ -29,18 +29,19 @@ class RreoApiController
 
         $ibge = filter_input(INPUT_POST, 'ibge', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
         $year = (int) filter_input(INPUT_POST, 'year', FILTER_SANITIZE_NUMBER_INT);
-        $periodicity = filter_input(INPUT_POST, 'periodicity', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
-        $period = filter_input(INPUT_POST, 'period', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
-        $scope = filter_input(INPUT_POST, 'scope', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+        $demonstrativo = filter_input(INPUT_POST, 'demonstrativo', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+        $period = (int) filter_input(INPUT_POST, 'period', FILTER_SANITIZE_NUMBER_INT);
+        $sphere = filter_input(INPUT_POST, 'sphere', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+        $annex = filter_input(INPUT_POST, 'annex', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
 
-        if ($ibge === '' || $year === 0 || $periodicity === '' || $period === '' || $scope === '') {
+        if ($ibge === '' || $year === 0 || $demonstrativo === '' || $period === 0 || $sphere === '' || $annex === '') {
             http_response_code(422);
             echo json_encode(['error' => 'Parâmetros obrigatórios ausentes.'], JSON_THROW_ON_ERROR);
             return;
         }
 
         try {
-            $data = $this->finbraService->fetchRreo($ibge, $year, $periodicity, $period, $scope);
+            $data = $this->finbraService->fetchRreo($ibge, $year, $demonstrativo, $period, $sphere, $annex);
             $_SESSION['rreo_last_result'] = $data;
             echo json_encode(['data' => $data], JSON_THROW_ON_ERROR);
         } catch (Exception $exception) {

@@ -22,10 +22,10 @@ Aplicação web em PHP 8 que consulta o Relatório Resumido de Execução Orçam
    ```bash
    export DB_HOST=localhost
    export DB_PORT=3306
-   export DB_NAME=finbra
-   export DB_USER=usuario
-   export DB_PASS=senha
-   export FINBRA_API_URL="https://api.fazenda.gov.br/finbra/rreo"
+   export DB_NAME=u371107598_cnm2
+   export DB_USER=u371107598_usercnm2
+   export DB_PASS='@Amora051307'
+   export FINBRA_API_URL="https://apidatalake.tesouro.gov.br/ords/siconfi/tt/rreo_anexo"
    export FINBRA_API_TOKEN="seu_token_aqui" # opcional
    export APP_BASE_URL="http://localhost:8000"
    ```
@@ -33,8 +33,8 @@ Aplicação web em PHP 8 que consulta o Relatório Resumido de Execução Orçam
 3. Crie o banco de dados e importe o esquema:
 
    ```bash
-   mysql -u usuario -p -e "CREATE DATABASE finbra CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-   mysql -u usuario -p finbra < sql/schema.sql
+   mysql -u u371107598_usercnm2 -p -e "CREATE DATABASE u371107598_cnm2 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+   mysql -u u371107598_usercnm2 -p u371107598_cnm2 < sql/schema.sql
    ```
 
 4. Baixe os arquivos `estados.csv` e `municipios.csv` do repositório [kelvins/municipios-brasileiros](https://github.com/kelvins/municipios-brasileiros) e utilize o carregador web:
